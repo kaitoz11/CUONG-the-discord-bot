@@ -2,7 +2,8 @@
 const Discord = require('discord.js');
 // Create a Json file which contain ur discord bot Token and it's prefix
 const { Prefix, Token } = require('./config.json');
-const client = new Discord.Client()
+const client = new Discord.Client();
+let prefix = Prefix;
 
 
 client.on('ready', () => {
@@ -12,11 +13,17 @@ client.on('ready', () => {
 
 client.on('message', msg => {
     console.log(msg.member.displayName+ ': "'+msg.content+'" in '+msg.channel.name);
-    if(!msg.content.startsWith(Prefix) || msg.author.bot) return;
-    let str = msg.content.substring(1);
+
+    if(msg.content == '<@!'+client.user.id+'>' || msg.content == '<@'+client.user.id+'>'){
+        msg.channel.send("Prefix: "+prefix);
+    }
+
+    if(!msg.content.startsWith(prefix) || msg.author.bot) return;
+    let str = msg.content.substring(prefix.length);
     console.log(str)
     let arr = str.toLowerCase().trim().split(/ +/);
     switch(arr[0]){
+        case "h" || "help":
         case "ping":
             msg.channel.send("What's up mah fellow?");
             msg.channel.send("*Eat my pp!!!*");
@@ -30,7 +37,18 @@ client.on('message', msg => {
         case "say":
             msg.channel.send(str.substring(arr[0].length))
             break;
+        case "prefix":
+
+            if(arr[1] == "default"){
+                prefix = Prefix;
+            }else if(arr.length == 2){
+                msg.channel.send("Prefix changed to: "+arr[1]);
+                prefix = arr[1];
+            }else{
+                msg.channel.send("Prefix: "+prefix);
+            }
+            break;
     }
 })
 
-client.login(Token)
+client.login(Token);
