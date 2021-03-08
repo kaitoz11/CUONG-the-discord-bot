@@ -10,14 +10,18 @@ client.on('ready', () => {
 })
 
 client.on('message', msg => {
-    console.log(msg.member.displayName+ ': "'+msg.content+'" in '+msg.channel.name)
-    switch(msg.content.toLowerCase()){
-        case "hi bot":
+    console.log(msg.member.displayName+ ': "'+msg.content+'" in '+msg.channel.name);
+    if(!msg.content.startsWith(Prefix)){
+        return
+    }
+
+    switch(msg.content.substring(1).toLowerCase()){
+        case "ping":
             msg.channel.send("What's up mah fellow?");
             msg.channel.send("*Eat my pp!!!*");
             break;
         case "zzz":
-            msg.channel.send(' Ngủ đê!!!!');
+            msg.channel.send('@everyone Ngủ đê!!!!');
             break;
     }
 })
