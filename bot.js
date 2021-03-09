@@ -1,8 +1,9 @@
 'use strict'
 const Discord = require('discord.js');
 // Create a Json file which contain ur discord bot Token and it's prefix
-const { Prefix, Token } = require('./config.json');
+const Prefix = "$"
 const client = new Discord.Client();
+require('dotenv').config();
 let prefix = Prefix;
 
 
@@ -24,6 +25,7 @@ client.on('message', msg => {
     let arr = str.toLowerCase().trim().split(/ +/);
     switch(arr[0]){
         case "h" || "help":
+            break;
         case "ping":
             msg.channel.send("What's up mah fellow?");
             msg.channel.send("*Eat my pp!!!*");
@@ -38,17 +40,22 @@ client.on('message', msg => {
             msg.channel.send(str.substring(arr[0].length))
             break;
         case "prefix":
-
-            if(arr[1] == "default"){
-                prefix = Prefix;
-            }else if(arr.length == 2){
-                msg.channel.send("Prefix changed to: "+arr[1]);
-                prefix = arr[1];
+            if(msg.author == msg.guild.ownerID && arr.length == 2){
+                console.log("Is Guild-master")
+                if(arr[1] == "default"){
+                    prefix = Prefix;
+                }else{
+                    msg.channel.send("Prefix changed to: "+arr[1]);
+                    prefix = arr[1];
+                }
+            }else if(msg.author != msg.guild.ownerID && arr.length == 2){
+                msg.channel.send("You must be the server's admin to change the Prefix");
             }else{
                 msg.channel.send("Prefix: "+prefix);
             }
             break;
+        
     }
 })
 
-client.login(Token);
+client.login(process.env.BOT_TOKEN);
