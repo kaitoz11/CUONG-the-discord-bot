@@ -3,6 +3,8 @@ const Discord = require('discord.js');
 // Create a Json file which contain ur discord bot Token and it's prefix
 const Prefix = "$"
 const client = new Discord.Client();
+const fs = require('fs');
+const ytdl = require('ytdl-core');
 require('dotenv').config();
 let prefix = Prefix;
 
@@ -54,7 +56,6 @@ client.on('message', msg => {
                 msg.channel.send("Prefix: "+prefix);
             }
             break;
-        
     }
 })
 
