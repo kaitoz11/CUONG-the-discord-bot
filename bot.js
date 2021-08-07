@@ -15,18 +15,22 @@ client.on('ready', () => {
 })
 
 client.on('message', msg => {
+    // logging ev
     console.log(msg.member.displayName+ ': "'+msg.content+'" in '+msg.channel.name);
 
     if(msg.content == '<@!'+client.user.id+'>' || msg.content == '<@'+client.user.id+'>'){
         msg.channel.send("Prefix: "+prefix);
+        msg.channel.send("Created by Hi There with LOVE <3");
     }
 
     if(!msg.content.startsWith(prefix) || msg.author.bot) return;
     let str = msg.content.substring(prefix.length);
-    console.log(str)
+    console.log(str)    // Log everything
     let arr = str.toLowerCase().trim().split(/ +/);
     switch(arr[0]){
         case "h" || "help":
+            // Text all commands
+
             break;
         case "ping":
             msg.channel.send("What's up mah fellow?");
@@ -56,6 +60,19 @@ client.on('message', msg => {
                 msg.channel.send("Prefix: "+prefix);
             }
             break;
+        case "admin":
+            if(msg.author == msg.guild.ownerID && msg.channel.id == "819213272741314582" && arr.length>1){
+                if(str.substring(arr[0].length+arr[1].length+2).length != 0)
+                {
+                    client.channels.cache.get(arr[1]).send(str.substring(arr[0].length+arr[1].length+2)) 
+                }else if(arr[1]=="h" || "help"){
+
+                    // msg.channel.send()
+                }
+            }
+            break;
+        // case "join":
+            
     }
 })
 
