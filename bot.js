@@ -1,5 +1,4 @@
-const fs = require('fs');
-const ytdl = require('ytdl-core');
+const Local_server = require('./commands/download')
 const Discord = require('discord.js');
 const client = new Discord.Client();
 // Create a Json file which would contain ur discord bot Token and it's prefix
@@ -10,9 +9,9 @@ let prefix = Prefix;      // Set prefix
 require('dotenv').config();// .env file which contain Token
 
 
-client.on('ready', () => {
+client.once('ready', () => {
     console.log("Connected as " + client.user.tag);
-    client.channels.cache.get("817064482714419230").send("Cường đang Online trong này!");
+    // client.channels.cache.get("817064482714419230").send("Cường đang Online trong này!");
 })
 
 //----------------Listening------------------
@@ -22,14 +21,15 @@ client.on('message', msg => {
     // Prefix checking
     if(msg.content == '<@!'+client.user.id+'>' || msg.content == '<@'+client.user.id+'>'){
         msg.channel.send("Prefix: "+prefix);
-        msg.channel.send("Created by Hi There with LOVE <3");
+        msg.channel.send("Created by Hi There with LOVE!❤💕");
     }
     // Start with the right prefix
     if(!msg.content.startsWith(prefix) || msg.author.bot) return;
     let str = msg.content.substring(prefix.length);
-    console.log(str)    // Log everything
-    let arr = str.toLowerCase().trim().split(/ +/);
-    switch(arr[0]){
+    console.log("Command regconized: "+str)    // Log everything
+    let arr = str.trim().split(/ +/);
+    
+    switch(arr[0].toLowerCase()){
         case "h" || "help":
             // Text all commands
 
@@ -60,10 +60,11 @@ client.on('message', msg => {
                 }
             }else if(msg.author != msg.guild.ownerID && arr.length == 2){
                 // If author is not admin
-                msg.channel.send("You must be the server's admin to change the Prefix");
+                msg.channel.send("You must be the server's admin to change the Prefix.😒");
             }else{
+                // If no argument
                 msg.channel.send("Prefix: "+prefix);
-                msg.channel.send("Created by Hi There with LOVE <3");
+                msg.channel.send("Created by Hi There with LOVE!❤💕");
             }
             break;
         case "admin":
@@ -72,13 +73,24 @@ client.on('message', msg => {
                 {
                     client.channels.cache.get(arr[1]).send(str.substring(arr[0].length+arr[1].length+2)) 
                 }else if(arr[1]=="h" || "help"){
-                    // msg.channel.send()
+                    msg.channel.send("help")
 
                 }
+            }else{
+                msg.channel.send("You're not allow to use it here!!👀👀")
             }
             break;
-        // case "join":
-            
+        case "audio":
+            if(arr.length==3){
+                Local_server.Download_audio(arr[1], arr[2])
+                msg.channel.send("Audio downloaded!")
+            }else{
+                msg.channel.send(`The sytax should be:\n${prefix}audio [youtube url] [file name]`)
+            }
+            break;
+        case "ls":
+            msg.channel.send("`"+Local_server.audio_files()+"`")
+            break
     }
 })
 
