@@ -1,5 +1,6 @@
-const Local_server = require('./commands/download')
+const Local_server = require('./commands/local.js')
 const Discord = require('discord.js');
+const { playYT } = require('./commands/local.js');
 const client = new Discord.Client();
 // Create a Json file which would contain ur discord bot Token and it's prefix
 
@@ -81,15 +82,65 @@ client.on('message', msg => {
             }
             break;
         case "audio":
-            if(arr.length==3){
-                Local_server.Download_audio(arr[1], arr[2])
+            if(arr.length==3&& arr[2].startsWith("https://www.youtube.com/watch?v=")){
+                Local_server.Download_audio(arr[2], arr[1])
                 msg.channel.send("Audio downloaded!")
             }else{
-                msg.channel.send(`The sytax should be:\n${prefix}audio [youtube url] [file name]`)
+                msg.channel.send(`The sytax should be:\n${prefix}audio [file name] [youtube url]`)
             }
             break;
         case "ls":
-            msg.channel.send("`"+Local_server.audio_files()+"`")
+            let files="";
+            let count=0
+            Local_server.audio_files().forEach(f => {
+                count++;
+                files+=count+". "+f+"\n";
+            })
+            msg.channel.send("`"+files+"`")
+            break
+        case "dl":
+            if(arr.length==2){
+                let choice = parseInt(arr[1])-1;
+                const attachment = new Discord.MessageAttachment("./audio/"+Local_server.audio_files()[choice])
+                msg.channel.send(`${msg.author} requested file:`, attachment);
+            }else{
+                msg.channel.send(`The sytax should be:\n${prefix}dl [file_id]`)
+            }
+            break
+        case "avatar":
+            if(msg.mentions.users.size){
+                let member=msg.mentions.users.first()
+            if(member){
+                const emb=new Discord.MessageEmbed().setImage(member.displayAvatarURL()).setTitle(member.username)
+                msg.channel.send(emb)
+            }
+            else{
+                msg.channel.send("Sorry none found with that name")    
+            }
+            }else{
+                const emb=new Discord.MessageEmbed().setImage(msg.author.displayAvatarURL()).setTitle(msg.author.username)
+                msg.channel.send(emb)
+            }
+            break
+        case "play" || "p":
+            if (!msg.member.voice.channel) {
+                msg.reply('You need to join a voice channel first!');
+                return
+            }
+            if(arr[1] == 'local' && arr.length == 3){
+                let choice = parseInt(arr[2])-1;
+                let song = Local_server.audio_files()
+                console.log(song[choice])
+                msg.member.voice.channel.join().then(con => {
+                    con.play(`./audio/${song[choice]}`,{volume: 0.5})
+                })
+            }
+            if(arr[1].startsWith("https://www.youtube.com/watch?v=")){
+                playYT(msg, arr[1])
+            }
+            break
+        case "leave":
+            
             break
     }
 })

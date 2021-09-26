@@ -17,7 +17,12 @@ module.exports = {
         fs.appendFile('./logs/audio.txt', File_name+".mp3"+'\n', err => console.log(err))
     },
     audio_files: ()=>{
-        let files=fs.readFileSync('./logs/audio.txt','utf8')
+        let files=fs.readdirSync("./audio/")
         return files
+    },
+    playYT: (msg, url)=>{
+        msg.member.voice.channel.join().then(con => {
+            con.play(ytdl(url, { filter: 'audioonly' }),{volume: 0.5})
+        })
     }
 }
