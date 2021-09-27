@@ -1,6 +1,5 @@
 const Local_server = require('./commands/local.js')
 const Discord = require('discord.js');
-const { playYT } = require('./commands/local.js');
 const client = new Discord.Client();
 // Create a Json file which would contain ur discord bot Token and it's prefix
 
@@ -122,7 +121,7 @@ client.on('message', msg => {
                 msg.channel.send(emb)
             }
             break
-        case "play" || "p":
+        case "play":
             if (!msg.member.voice.channel) {
                 msg.reply('You need to join a voice channel first!');
                 return
@@ -136,7 +135,7 @@ client.on('message', msg => {
                 })
             }
             if(arr[1].startsWith("https://www.youtube.com/watch?v=")){
-                playYT(msg, arr[1])
+                Local_server.playYT(msg, arr[1])
             }
             break
         case "leave":
